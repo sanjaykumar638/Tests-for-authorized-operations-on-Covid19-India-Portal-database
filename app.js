@@ -28,6 +28,7 @@ const initializeDbAndServer = async () => {
     );
   } catch (error) {
     console.log(`DB Error: ${error.message}`);
+    process.exit(1);
   }
 };
 
@@ -109,7 +110,7 @@ app.post("/login/", async (request, response) => {
       response.send({ jwtToken });
     } else {
       response.status(400);
-      response.send("Invalid Password");
+      response.send("Invalid password");
     }
   }
 });
@@ -165,13 +166,13 @@ app.post("/districts/", authenticateToken, async (request, response) => {
     district 
     (state_id,district_name,cases,cured,active,deaths)
     VALUES
-    (${stateId}, '${districtName}',${cases},${active},${deaths});`;
+    (${stateId}, '${districtName}',${cases},${cured},${active},${deaths});`;
   await database.run(postDistrictQuery);
   response.send("District Successfully Added");
 });
 
 app.delete(
-  "/district:/districtId/",
+  "/districts/:districtId/",
   authenticateToken,
   async (request, response) => {
     const { districtId } = request.params;
@@ -187,7 +188,7 @@ app.delete(
 );
 
 app.put(
-  "/districts:/districtId/",
+  "/districts/:districtId/",
   authenticateToken,
   async (request, response) => {
     const { districtId } = request.params;
@@ -216,7 +217,7 @@ app.put(
 );
 
 app.get(
-  "/states:/stateID/stats/",
+  "/states/:stateID/stats/",
   authenticateToken,
   async (request, response) => {
     const { stateID } = request.params;
